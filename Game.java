@@ -3,8 +3,15 @@ import java.util.Scanner;
 public class Game {
 
     public static void cls() {
+        // clear screen
         try {
-            Runtime.getRuntime().exec("cls");
+            final String os= System.getProperty("os.name");
+            if(os.contains("Windows")) {
+                Runtime.getRuntime().exec("cls");
+            }
+            else {
+                Runtime.getRuntime().exec("clear");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -12,57 +19,44 @@ public class Game {
 
     public static void main(String[] args) {
         Term2048 n= new Term2048();
+        n.dropNewTile();
+        n.dropNewTile();
+        n.dropNewTile();
         n.drawBoard();
 
-        // Scanner scanner= new Scanner(System.in);
-
-        for(int i= 0; i<3; i++) {
-            n.dropNewTile();
-        }
-
-        System.out.println();
-        n.drawBoard();
-
-        // String input= scanner.nextLine();
+        Scanner scanner= new Scanner(System.in);
+        String input;
+        int[][] oldBoard= new int[4][4];
         
-        // if(input.equals("w\n")) {
-        //     n.keyUp();
-        // }
-
-        for(int i= 0; i<40; i++) {
-            n.dropNewTile();
-            System.out.println();
-            n.drawBoard();
-            n.keyUp();
-            n.drawBoard(); 
-
-            // n.dropNewTile();
-            // System.out.println();
-            // n.drawBoard();
-            // n.keyDown();
-            // n.drawBoard();
-
-            n.dropNewTile();
-            System.out.println();
-            n.drawBoard();
-            n.keyLeft();
-            n.drawBoard();
-
-            n.dropNewTile();
-            System.out.println();
-            n.drawBoard();
-            n.keyRight();
+        // main game loop
+        while(!n.isFullBoard()) {
+            for(int x= 0; x<4; x++) {
+                for(int y= 0; y<4; y++) {
+                    oldBoard[x][y]= n.getBoard()[x][y];
+                }
+            }
+            
+            input= scanner.next();
+            
+            if(input.equals("w")) {
+                n.keyUp();
+            }
+            else if(input.equals("s")) {
+                n.keyDown();
+            }
+            else if(input.equals("a")) {
+                n.keyLeft();
+            }
+            else if(input.equals("d")) {
+                n.keyRight();
+            }
+            
+            if(!oldBoard.equals(n.getBoard())) {
+                n.dropNewTile();
+            }
+            
+            // cls();
             n.drawBoard();
         }
-
-        // n.dropNewTile();
-        // while(true) {
-        //     n.dropNewTile();
-        //     // cls();
-        //     n.drawBoard();
-        //     n.getKey();
-        //     // cls();
-        //     n.drawBoard();
-        // }
     }
 }

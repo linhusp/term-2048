@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Term2048 {
+    // our algorithm
 
     private int[][] board;
     private Random rand= new Random();
@@ -11,16 +12,48 @@ public class Term2048 {
         board= new int[4][4];
     }
 
+    public int[][] getBoard() {
+        return board;
+    }
+
     public void drawBoard() {
+        //draw new string board
+        String[][] strBoard= new String[4][4];
         for(int x= 0; x<4; x++) {
             for(int y= 0; y<4; y++) {
-                System.out.print(board[x][y]+"\t");
+                if(board[x][y]==0) {
+                    strBoard[x][y]= ".";
+                }
+                else {
+                    strBoard[x][y]= ""+board[x][y];
+                }
             }
-            System.out.println();
         }
+        
+        String line= "---------------------------------";
+        System.out.println(line);
+        for(int x= 0; x<4; x++) {
+            for(int y= 0; y<4; y++) {
+                System.out.print("|"+strBoard[x][y]+"\t");
+            }
+            System.out.println("|");
+        }
+        System.out.println(line);
+    }
+
+    public boolean isFullBoard() {
+        for(int x= 0; x<4; x++) {
+            for(int y= 0; y<4; y++) {
+                if(board[x][y]==0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     public void dropNewTile() {
+        // drop random tile
         ArrayList<Integer> emptyTilesX= new ArrayList<Integer>();
         ArrayList<Integer> emptyTilesY= new ArrayList<Integer>();
 
@@ -45,132 +78,155 @@ public class Term2048 {
         board[dropX][dropY]= newTileNumber;
     }
 
-    public void getKey() {
-        Scanner scanner= new Scanner(System.in);
-        String input= new String("");
-        while(input!="w\n" || input!="s\n" || input!="a\n" || input!="d\n") {
-            input= scanner.nextLine();
-        }
-        scanner.close();
-
-        switch (input) {
-            case "w\n":
-                keyUp();
-                break;
-            case "s\n":
-                keyDown();
-                break;
-            case "a\n":
-                keyLeft();
-                break;
-            case "d\n":
-                keyRight();
-                break;
-            default:
-                break;
-        }
-
-    }
-
+    // key set system
+    
     public void keyUp() {
-        System.out.println("key up");
         for(int y= 0; y<4; y++) {
-            boolean[] isCombined= {false, false, false, false};
-            for(int x= 1; x<4; x++) {
-                if(board[x][y]!=0) {
-                    int tileValue= board[x][y];
-                    int xd= x-1;
+            if(board[0][y]!=0 || board[1][y]!=0 || board[2][y]!=0 || board[3][y]!=0) {
+                while(board[0][y]==0) {
+                    board[0][y]= board[1][y];
+                    board[1][y]= board[2][y];
+                    board[2][y]= board[3][y];
+                    board[3][y]= 0;
+                }
+                while(board[1][y]==0 && (board[2][y]!=0 || board[3][y]!=0)) {
+                    board[1][y]= board[2][y];
+                    board[2][y]= board[3][y];
+                    board[3][y]= 0;
+                }
+                while(board[2][y]==0 && board[3][y]!=0) {
+                    board[2][y]= board[3][y];
+                    board[3][y]= 0;
+                }
 
-                    while(xd>=0 && board[xd][y]==0) {
-                        xd--;
-                    }
-
-                    board[x][y]= 0;
-                    if(xd==-1 || board[xd][y]!=tileValue || isCombined[xd]) {
-                        board[xd+1][y]= tileValue;
-                    }
-                    else {
-                        board[xd][y]*= 2;
-                        isCombined[xd]= true;
-                    }
+                if(board[0][y]==board[1][y]) {
+                    board[0][y]*= 2;
+                    board[1][y]= board[2][y];
+                    board[2][y]= board[3][y];
+                    board[3][y]= 0;
+                }
+                if(board[1][y]==board[2][y]) {
+                    board[1][y]*= 2;
+                    board[2][y]= board[3][y];
+                    board[3][y]= 0;
+                }
+                if(board[2][y]==board[3][y]) {
+                    board[2][y]*= 2;
+                    board[3][y]= 0;
                 }
             }
         }
     }
 
     public void keyDown() {
-        System.out.println("key down");
         for(int y= 0; y<4; y++) {
-            boolean[] isCombined= {false, false, false, false};
-            for(int x= 2; x>-1; x--) {
-                if(board[x][y]!=0) {
-                    int tileValue= board[x][y];
-                    int xd= x+1;
+            if(board[0][y]!=0 || board[1][y]!=0 || board[2][y]!=0 || board[3][y]!=0) {
+                while(board[3][y]==0) {
+                    board[3][y]= board[2][y];
+                    board[2][y]= board[1][y];
+                    board[1][y]= board[0][y];
+                    board[0][y]= 0;
+                }
+                while(board[2][y]==0 && (board[1][y]!=0 || board[0][y]!=0)) {
+                    board[2][y]= board[1][y];
+                    board[1][y]= board[0][y];
+                    board[0][y]= 0;
+                }
+                while(board[1][y]==0 && board[0][y]!=0) {
+                    board[1][y]= board[0][y];
+                    board[0][y]= 0;
+                }
 
-                    while(xd<=3 && board[xd][y]==0) {
-                        xd++;
-                    }
-                    
-                    board[x][y]= 0;
-                    if(xd==4 || board[xd][y]!=tileValue || isCombined[xd]) {
-                        board[xd-1][y]= tileValue;
-                    }
-                    else {
-                        board[xd][y]*= 2;
-                        isCombined[xd]= true;
-                    }
+                if(board[3][y]==board[2][y]) {
+                    board[3][y]*= 2;
+                    board[2][y]= board[1][y];
+                    board[1][y]= board[0][y];
+                    board[0][y]= 0;
+                }
+                if(board[2][y]==board[1][y]) {
+                    board[2][y]*= 2;
+                    board[1][y]= board[0][y];
+                    board[0][y]= 0;
+                }
+                if(board[1][y]==board[0][y]) {
+                    board[1][y]*= 2;
+                    board[0][y]= 0;
                 }
             }
         }
     }
 
     public void keyLeft() {
-        System.out.println("key left");
         for(int x= 0; x<4; x++) {
-            boolean[] isCombined= {false, false, false, false};
-            for(int y= 1; y<4; y++) {
-                if(board[x][y]!=0) {
-                    int tileValue= board[x][y];
-                    int yd= y-1;
+            if(board[x][0]!=0 || board[x][1]!=0 || board[x][2]!=0 || board[x][3]!=0) {
+                while(board[x][0]==0) {
+                    board[x][0]= board[x][1];
+                    board[x][1]= board[x][2];
+                    board[x][2]= board[x][3];
+                    board[x][3]= 0;
+                }
+                while(board[x][1]==0 && (board[x][2]!=0 || board[x][3]!=0)) {
+                    board[x][1]= board[x][2];
+                    board[x][2]= board[x][3];
+                    board[x][3]= 0;
+                }
+                while(board[x][2]==0 && board[x][3]!=0) {
+                    board[x][2]= board[x][3];
+                    board[x][3]= 0;
+                }
 
-                    while(yd>=0 && board[x][yd]==0) {
-                        yd--;
-                    }
-                    
-                    board[x][y]= 0;
-                    if(yd==-1 || board[x][yd]!=tileValue || isCombined[yd]) {
-                        board[x][yd+1]= tileValue;
-                    }
-                    else {
-                        board[x][yd]*= 2;
-                        isCombined[yd]= true;
-                    }
+                if(board[x][0]==board[x][1]) {
+                    board[x][0]*= 2;
+                    board[x][1]= board[x][2];
+                    board[x][2]= board[x][3];
+                    board[x][3]= 0;
+                }
+                if(board[x][1]==board[x][2]) {
+                    board[x][1]*= 2;
+                    board[x][2]= board[x][3];
+                    board[x][3]= 0;
+                }
+                if(board[x][2]==board[x][3]) {
+                    board[x][2]*= 2;
+                    board[x][3]= 0;
                 }
             }
         }
     }
 
     public void keyRight() {
-        System.out.println("key right");
         for(int x= 0; x<4; x++) {
-            boolean[] isCombined= {false, false, false, false};
-            for(int y= 2; y>-1; y--) {
-                if(board[x][y]!=0) {
-                    int tileValue= board[x][y];
-                    int yd= y+1;
-
-                    while(yd<=3 && board[x][yd]==0) {
-                        yd++;
-                    }
-
-                    board[x][y]= 0;
-                    if(yd==4 || board[x][yd]!=tileValue || isCombined[yd]) {
-                        board[x][yd-1]= tileValue;
-                    }
-                    else {
-                        board[x][yd]*= 2;
-                        isCombined[yd]= true;
-                    }
+            if(board[x][0]!=0 || board[x][1]!=0 || board[x][2]!=0 || board[x][3]!=0) {
+                while(board[x][3]==0) {
+                    board[x][3]= board[x][2];
+                    board[x][2]= board[x][1];
+                    board[x][1]= board[x][0];
+                    board[x][0]= 0;
+                }
+                while(board[x][2]==0 && (board[x][1]!=0 || board[x][0]!=0)) {
+                    board[x][2]= board[x][1];
+                    board[x][1]= board[x][0];
+                    board[x][0]= 0;
+                }
+                while(board[x][1]==0 && board[x][0]!=0) {
+                    board[x][1]= board[x][0];
+                    board[x][0]= 0;
+                }
+                
+                if(board[x][3]==board[x][2]) {
+                    board[x][3]*= 2;
+                    board[x][2]= board[x][1];
+                    board[x][1]= board[x][0];
+                    board[x][0]= 0;
+                }
+                if(board[x][2]==board[x][1]) {
+                    board[x][2]*= 2;
+                    board[x][1]= board[x][0];
+                    board[x][0]= 0;
+                }
+                if(board[x][1]==board[x][0]) {
+                    board[x][1]*= 2;
+                    board[x][0]= 0;
                 }
             }
         }
