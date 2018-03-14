@@ -7,6 +7,7 @@ public class Term2048 {
 
     private int[][] board;
     private Random rand= new Random();
+    private int score;
 
     public Term2048() {
         board= new int[4][4];
@@ -14,6 +15,10 @@ public class Term2048 {
 
     public int[][] getBoard() {
         return board;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public void drawBoard() {
@@ -42,6 +47,7 @@ public class Term2048 {
     }
 
     public boolean isFullBoard() {
+        // check if the board is full of tiles
         for(int x= 0; x<4; x++) {
             for(int y= 0; y<4; y++) {
                 if(board[x][y]==0) {
@@ -51,9 +57,21 @@ public class Term2048 {
         }
         return true;
     }
+
+    public boolean isOldBoard(int[][] oldBoard) {
+        // check if has the board changed after move
+        for(int x= 0; x<4; x++) {
+            for(int y= 0; y<4; y++) {
+                if(oldBoard[x][y]!=board[x][y]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     
     public void dropNewTile() {
-        // drop random tile
+        // drop a random tile after move
         ArrayList<Integer> emptyTilesX= new ArrayList<Integer>();
         ArrayList<Integer> emptyTilesY= new ArrayList<Integer>();
 
@@ -104,15 +122,18 @@ public class Term2048 {
                     board[1][y]= board[2][y];
                     board[2][y]= board[3][y];
                     board[3][y]= 0;
+                    score+= board[0][y];
                 }
                 if(board[1][y]==board[2][y]) {
                     board[1][y]*= 2;
                     board[2][y]= board[3][y];
                     board[3][y]= 0;
+                    score+= board[1][y];
                 }
                 if(board[2][y]==board[3][y]) {
                     board[2][y]*= 2;
                     board[3][y]= 0;
+                    score+= board[2][y];
                 }
             }
         }
@@ -142,15 +163,18 @@ public class Term2048 {
                     board[2][y]= board[1][y];
                     board[1][y]= board[0][y];
                     board[0][y]= 0;
+                    score+= board[3][y];
                 }
                 if(board[2][y]==board[1][y]) {
                     board[2][y]*= 2;
                     board[1][y]= board[0][y];
                     board[0][y]= 0;
+                    score+= board[2][y];
                 }
                 if(board[1][y]==board[0][y]) {
                     board[1][y]*= 2;
                     board[0][y]= 0;
+                    score+= board[1][y];
                 }
             }
         }
@@ -180,15 +204,18 @@ public class Term2048 {
                     board[x][1]= board[x][2];
                     board[x][2]= board[x][3];
                     board[x][3]= 0;
+                    score+= board[x][0];
                 }
                 if(board[x][1]==board[x][2]) {
                     board[x][1]*= 2;
                     board[x][2]= board[x][3];
                     board[x][3]= 0;
+                    score+= board[x][1];
                 }
                 if(board[x][2]==board[x][3]) {
                     board[x][2]*= 2;
                     board[x][3]= 0;
+                    score+= board[x][2];
                 }
             }
         }
@@ -218,15 +245,18 @@ public class Term2048 {
                     board[x][2]= board[x][1];
                     board[x][1]= board[x][0];
                     board[x][0]= 0;
+                    score+= board[x][3];
                 }
                 if(board[x][2]==board[x][1]) {
                     board[x][2]*= 2;
                     board[x][1]= board[x][0];
                     board[x][0]= 0;
+                    score+= board[x][2];
                 }
                 if(board[x][1]==board[x][0]) {
                     board[x][1]*= 2;
                     board[x][0]= 0;
+                    score+= board[x][1];
                 }
             }
         }

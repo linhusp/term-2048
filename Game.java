@@ -7,10 +7,10 @@ public class Game {
         try {
             final String os= System.getProperty("os.name");
             if(os.contains("Windows")) {
-                Runtime.getRuntime().exec("cls");
+                new ProcessBuilder("cls").inheritIO().start().waitFor();
             }
             else {
-                Runtime.getRuntime().exec("clear");
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -22,7 +22,9 @@ public class Game {
         n.dropNewTile();
         n.dropNewTile();
         n.dropNewTile();
+        cls();
         n.drawBoard();
+        System.out.println("Your score: "+n.getScore());
 
         Scanner scanner= new Scanner(System.in);
         String input;
@@ -51,12 +53,13 @@ public class Game {
                 n.keyRight();
             }
             
-            if(!oldBoard.equals(n.getBoard())) {
+            if(n.isOldBoard(oldBoard)) {
                 n.dropNewTile();
             }
             
-            // cls();
+            cls();
             n.drawBoard();
+            System.out.println("Your score: "+n.getScore());
         }
     }
 }
