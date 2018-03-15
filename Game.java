@@ -61,5 +61,6 @@ public class Game {
             n.drawBoard();
             System.out.println("Your score: "+n.getScore());
         }
+        scanner.close();
     }
 }
