@@ -1,5 +1,4 @@
 import java.util.Random;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Term2048 {
@@ -30,6 +29,9 @@ public class Term2048 {
                     strBoard[x][y]= ".";
                 }
                 else {
+                    // set color
+                    if(board[x][y]%3==2) {
+                    }
                     strBoard[x][y]= ""+board[x][y];
                 }
             }
